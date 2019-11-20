@@ -2,6 +2,7 @@ package simpledb;
 
 import java.io.Serializable;
 import java.util.Arrays;
+import java.util.ArrayList;
 import java.util.Iterator;
 
 /**
@@ -13,6 +14,10 @@ public class Tuple implements Serializable {
 
     private static final long serialVersionUID = 1L;
 
+		private TupleDesc schema;
+		private ArrayList<Field> data;
+		RecordId rid;
+
     /**
      * Create a new tuple with the specified schema (type).
      *
@@ -22,14 +27,17 @@ public class Tuple implements Serializable {
      */
     public Tuple(TupleDesc td) {
         // some code goes here
+				schema = td;
+				Field[] fields = new Field[td.numFields()];
+				Arrays.fill(fields, null);
+				data = new ArrayList<>(Arrays.asList(fields));
     }
 
     /**
      * @return The TupleDesc representing the schema of this tuple.
      */
     public TupleDesc getTupleDesc() {
-        // some code goes here
-        return null;
+				return schema;
     }
 
     /**
@@ -38,7 +46,7 @@ public class Tuple implements Serializable {
      */
     public RecordId getRecordId() {
         // some code goes here
-        return null;
+				return this.rid;
     }
 
     /**
@@ -49,6 +57,7 @@ public class Tuple implements Serializable {
      */
     public void setRecordId(RecordId rid) {
         // some code goes here
+				this.rid = rid;
     }
 
     /**
@@ -61,6 +70,7 @@ public class Tuple implements Serializable {
      */
     public void setField(int i, Field f) {
         // some code goes here
+				data.set(i, f);
     }
 
     /**
@@ -71,7 +81,7 @@ public class Tuple implements Serializable {
      */
     public Field getField(int i) {
         // some code goes here
-        return null;
+				return data.get(i);
     }
 
     /**
@@ -84,7 +94,14 @@ public class Tuple implements Serializable {
      */
     public String toString() {
         // some code goes here
-        throw new UnsupportedOperationException("Implement this");
+        //throw new UnsupportedOperationException("Implement this");
+				String res = "";
+
+				for (int i = 0; i < data.size(); i++) {
+						res += data.get(i).toString() + " ";
+				}
+
+				return res;
     }
 
     /**
@@ -94,7 +111,7 @@ public class Tuple implements Serializable {
     public Iterator<Field> fields()
     {
         // some code goes here
-        return null;
+				return data.iterator();
     }
 
     /**
@@ -103,5 +120,6 @@ public class Tuple implements Serializable {
     public void resetTupleDesc(TupleDesc td)
     {
         // some code goes here
+				schema = td;
     }
 }
