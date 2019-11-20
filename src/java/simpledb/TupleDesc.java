@@ -154,7 +154,8 @@ public class TupleDesc implements Serializable {
     public int fieldNameToIndex(String name) throws NoSuchElementException {
         // some code goes here
 				for (int i = 0; i < tuples.size(); i++) {
-					if (getFieldName(i).equals(name)) {
+					String fName = getFieldName(i);
+					if (fName != null && fName.equals(name)) {
 						return i;
 					}
 				}
@@ -222,6 +223,10 @@ public class TupleDesc implements Serializable {
 
     public boolean equals(Object o) {
         // some code goes here
+				if (o == null || !(o instanceof TupleDesc)) {
+					return false;
+				}
+
 				if (this.numFields() != ((TupleDesc) o).numFields()) {
 					return false;
 				} else {
@@ -229,6 +234,7 @@ public class TupleDesc implements Serializable {
 					int idx = 0;
 
 					while (it.hasNext()) {
+						assert(this.tuples.get(idx) != null);
 						if (!this.tuples.get(idx).equals(((TDItem)it.next()))) {
 							return false;
 						}
