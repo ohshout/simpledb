@@ -18,12 +18,27 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class Catalog {
 
+    public class Table {
+        public String name;
+        public DbFile file;
+        public String pkeyField;
+
+        public Table(String name, DbFile file, String pkeyField) {
+            this.name = name;
+            this.file = file;
+            this.pkeyField = pkeyField;
+        }
+    }
+
+    private Map<Integer, Table> tables;
+
     /**
      * Constructor.
      * Creates a new, empty catalog.
      */
     public Catalog() {
         // some code goes here
+        tables = new HashMap<>();
     }
 
     /**
@@ -37,6 +52,7 @@ public class Catalog {
      */
     public void addTable(DbFile file, String name, String pkeyField) {
         // some code goes here
+        tables.put(file.getId(), new Table(name, file, pkeyField));
     }
 
     public void addTable(DbFile file, String name) {
@@ -60,7 +76,15 @@ public class Catalog {
      */
     public int getTableId(String name) throws NoSuchElementException {
         // some code goes here
-        return 0;
+        Iterator it = tables.entrySet().iterator();
+        while (it.hasNext()) {
+            Map.Entry mapElement = (Map.Entry)it.next();
+            if (((Table)mapElement.getValue()).name.equals(name)) {
+                return ((Integer)mapElement.getKey());
+            }
+        }
+
+        throw new NoSuchElementException();
     }
 
     /**
@@ -71,7 +95,12 @@ public class Catalog {
      */
     public TupleDesc getTupleDesc(int tableid) throws NoSuchElementException {
         // some code goes here
-        return null;
+        Table tab = tables.get(tableid);
+        if (tab == null) {
+            throw new NoSuchElementException();
+        } else {
+            return tab.file.getTupleDesc();
+        }
     }
 
     /**
@@ -82,27 +111,43 @@ public class Catalog {
      */
     public DbFile getDatabaseFile(int tableid) throws NoSuchElementException {
         // some code goes here
-        return null;
+        Table tab = tables.get(tableid);
+        if (tab == null) {
+            throw new NoSuchElementException();
+        } else {
+            return tab.file;
+        }
     }
 
     public String getPrimaryKey(int tableid) {
         // some code goes here
-        return null;
+        Table tab = tables.get(tableid);
+        if (tab == null) {
+            return null;
+        } else {
+            return tab.pkeyField;
+        }
     }
 
     public Iterator<Integer> tableIdIterator() {
         // some code goes here
-        return null;
+        return tables.keySet().iterator();
     }
 
     public String getTableName(int id) {
         // some code goes here
-        return null;
+        Table tab = tables.get(id);
+        if (tab == null) {
+            return null;
+        } else {
+            return tab.name;
+        }
     }
     
     /** Delete all tables from the catalog */
     public void clear() {
         // some code goes here
+        tables.clear();
     }
     
     /**
