@@ -126,7 +126,7 @@ public class HeapFile implements DbFile {
     }
 
 		private class HeapFileIterator implements DbFileIterator {
-				private Iterator<Tuple> pageIterator;
+				private Iterator<Tuple> pageIterator = null;
 				private int pageNo;
 				private TransactionId tid;
 
@@ -140,13 +140,21 @@ public class HeapFile implements DbFile {
 						HeapPage pg =
 							(HeapPage) Database.getBufferPool().getPage(tid, id, Permissions.READ_WRITE);
 						pageIterator = pg.iterator();
+                        assert(pageIterator != null);
 				}
 
 				public boolean hasNext() {
-						return pageNo < HeapFile.this.numPages();
+                        if (pageNo < HeapFile.this.numPages()-1) {
+                            return true;
+                        } else if (pageNo == HeapFile.this.numPages()-1) {
+                            return pageIterator.hasNext();
+                        } else {
+                            return false;
+                        }
 				}
 
 				public Tuple next() throws DbException, TransactionAbortedException, NoSuchElementException {
+                        assert(pageIterator != null);
 						Tuple t = pageIterator.next();
 
 						if (!pageIterator.hasNext()) {
@@ -156,6 +164,7 @@ public class HeapFile implements DbFile {
 									HeapPage pg =
 										(HeapPage) Database.getBufferPool().getPage(tid, id, Permissions.READ_WRITE);
 									pageIterator = pg.iterator();
+                                    assert(pageIterator != null);
 							}
 						}
 
@@ -163,7 +172,7 @@ public class HeapFile implements DbFile {
 				}
 
 				public void rewind() throws DbException, TransactionAbortedException {
-						throw new DbException("rewind not supported");
+                        this.open();
 				}
 
 				public void close() {
