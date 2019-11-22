@@ -52,6 +52,7 @@ public class Catalog {
      */
     public void addTable(DbFile file, String name, String pkeyField) {
         // some code goes here
+				// XXX: file id is the table id
         tables.put(file.getId(), new Table(name, file, pkeyField));
     }
 
