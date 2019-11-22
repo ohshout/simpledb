@@ -26,7 +26,14 @@ public class JoinPredicate implements Serializable {
      */
     public JoinPredicate(int field1, Predicate.Op op, int field2) {
         // some code goes here
+        this.fieldNo1 = field1;
+        this.fieldNo2 = field2;
+        this.op = op;
     }
+
+    private int fieldNo1;
+    private int fieldNo2;
+    private Predicate.Op op;
 
     /**
      * Apply the predicate to the two specified tuples. The comparison can be
@@ -36,24 +43,24 @@ public class JoinPredicate implements Serializable {
      */
     public boolean filter(Tuple t1, Tuple t2) {
         // some code goes here
-        return false;
+        return t1.getField(fieldNo1).compare(this.op, t2.getField(fieldNo2));
     }
     
     public int getField1()
     {
         // some code goes here
-        return -1;
+        return this.fieldNo1;
     }
     
     public int getField2()
     {
         // some code goes here
-        return -1;
+        return this.fieldNo2;
     }
     
     public Predicate.Op getOperator()
     {
         // some code goes here
-        return null;
+        return this.op;
     }
 }
