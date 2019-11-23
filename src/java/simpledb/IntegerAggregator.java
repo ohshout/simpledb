@@ -24,7 +24,22 @@ public class IntegerAggregator implements Aggregator {
 
     public IntegerAggregator(int gbfield, Type gbfieldtype, int afield, Op what) {
         // some code goes here
+        this.gbfield = gbfield;
+        this.gbfieldtype = gbfieldtype;
+        this.afield = afield;
+        this.op = what;
+
+        if (gbfield != NO_GROUPING) {
+            groups = new HashMap<IntField, ArrayList<Tuple>>();
+        }
     }
+
+    private int gbfield;
+    private Type gbfieldtype;
+    private int afield;
+    private Op op;
+
+    Map<Field, ArrayList<Tuple>> groups;
 
     /**
      * Merge a new tuple into the aggregate, grouping as indicated in the
@@ -35,6 +50,7 @@ public class IntegerAggregator implements Aggregator {
      */
     public void mergeTupleIntoGroup(Tuple tup) {
         // some code goes here
+        Field f = tup.getField(gbfield);
     }
 
     /**
